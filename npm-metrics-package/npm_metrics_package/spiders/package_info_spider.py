@@ -51,9 +51,20 @@ class PackageInfoSpider(scrapy.Spider):
         try:
             data = json.loads(response.text)
             
-            # Extraemos el propósito (descripción del paquete)
             item['purpose'] = data.get('description', 'No description available')
-            
+
+            item['license'] = data.get('license')
+
+            #Counter of maintainers
+            maintainers = data.get('maintainers', [])
+            item['maintainer_count'] = len(maintainers)
+
+            #Last modified time
+            last_modified_time = data.get('time', {}).get('modified')
+            if last_modified_time:
+                item['last_modified'] = last_modified_time
+
+
             latest_version = data.get('dist-tags', {}).get('latest')
 
             if latest_version:
@@ -61,7 +72,11 @@ class PackageInfoSpider(scrapy.Spider):
 
                 item['version'] = latest_version
                 item['dependencies'] = version_data.get('dependencies', {})
-                item['tarball_size_bytes'] = version_data.get('dist', {}).get('unpackedSize')
+                
+                # Convert byte size to MBConvert byte size to MB (1 MB = 1,048,576 bytes)
+                unpacked_size_bytes = version_data.get('dist', {}).get('unpackedSize', 0)
+                item['size_mb'] = round(unpacked_size_bytes / (1024 * 1024), 2)  # Round to 2 decimals
+                
                 item['tarball_url'] = version_data.get('dist', {}).get('tarball')
             return item
     

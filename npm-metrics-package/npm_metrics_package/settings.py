@@ -15,8 +15,8 @@ NEWSPIDER_MODULE = "npm_metrics_package.spiders"
 ADDONS = {}
 
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = "npm_metrics_package (anaisrodriguezcarvajal@gmail.com)"
+#Crawl responsibly by identifying student: Anais Rodríguez Carvajal
+USER_AGENT = "npm_metrics_package (anais.rodriguez01@alumnos.ucn.cl)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True

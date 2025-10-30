@@ -6,6 +6,19 @@ import shutil
 from io import BytesIO
 
 class LocalCodeAnalysisPipeline:
+
+
+
+
+
+
+
+
+
+
+
+
+
     def process_item(self, item, spider):
         # Only process if we have the tarball URL
         if item.get('tarball_url'):

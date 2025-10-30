@@ -7,26 +7,31 @@ import scrapy
 
 
 class NpmMetricsPackageItem(scrapy.Item):
-    # Campo clave
+    # Key field
     package_name = scrapy.Field()
     
-    # URL de la página pública de NPM
+    # NPM public URL
     public_url = scrapy.Field()
     
-    # Descripción corta/propósito del paquete
+    # DShort description/purpose of the package
     purpose = scrapy.Field()
     
-    # Métrica de Descargas (del Paso B - API Downloads)
+    #  Step B Downloads API
     downloads_last_month = scrapy.Field()
     
-    # Métricas de Metadatos (del Paso C - Registry API)
+    # Step C Registry API
     dependencies = scrapy.Field()
     version = scrapy.Field()
-    tarball_size_bytes = scrapy.Field()
+    size_mb = scrapy.Field()  # Package size in MB (unpacked)
     
-    # URL del tarball (solo para uso interno en el Pipeline)
+    # Tarball URL (for internal use in Pipeline only)
     tarball_url = scrapy.Field()
     
     # Métricas de Análisis Local (del Paso D - Pipeline)
     total_files = scrapy.Field()
     total_functions = scrapy.Field()
+
+    #New additional metrics
+    license = scrapy.Field()
+    maintainer_count = scrapy.Field()
+    last_modified = scrapy.Field()
