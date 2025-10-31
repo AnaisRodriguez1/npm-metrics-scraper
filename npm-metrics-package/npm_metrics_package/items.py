@@ -27,7 +27,7 @@ class NpmMetricsPackageItem(scrapy.Item):
     # Tarball URL (for internal use in Pipeline only)
     tarball_url = scrapy.Field()
     
-    # Métricas de Análisis Local (del Paso D - Pipeline)
+    #Local Analysis Metrics (from Step D - Pipeline)
     total_files = scrapy.Field()
     total_functions = scrapy.Field()
 

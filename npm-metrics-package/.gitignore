@@ -33,3 +33,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+#Extras
+test_parser.py
