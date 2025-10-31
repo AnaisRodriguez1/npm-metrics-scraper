@@ -58,10 +58,8 @@ El Pipeline descarga el archivo `.tgz` del paquete y analiza:
 1. **Descarga el tarball** (archivo comprimido del paquete)
 2. **Descomprime** en una carpeta temporal
 3. **Cuenta archivos** JavaScript/TypeScript (`.js`, `.ts`, `.jsx`, `.tsx`)
-4. **Simula conteo de funciones** (actualmente es una simulación)
+4. **Simula conteo de funciones** (AST implementado)
 5. **Limpia** la carpeta temporal
-
-> ⚠️ **Nota:** El conteo de funciones es actualmente una **simulación**. Una implementación real usaría un parser AST (Abstract Syntax Tree) como `esprima` o `babel-parser`.
 
 ## 📋 Datos Capturados
 
@@ -72,16 +70,16 @@ Para cada paquete NPM, el scraper recopila:
 | `package_name` | Nombre del paquete | `"react"` |
 | `public_url` | URL pública en npmjs.com | `"https://www.npmjs.com/package/react"` |
 | `purpose` | Descripción corta | `"React is a JavaScript library..."` |
-| `downloads_last_month` | Descargas del último mes | `195209356` |
-| `version` | Versión actual | `"19.2.0"` |
-| `size_mb` | Tamaño descomprimido en MB | `0.16` |
+| `downloads_last_month` | Descargas del último mes | 
+| `version` | Versión actual |
+| `size_mb` | Tamaño descomprimido en MB |
 | `dependencies` | Dependencias del paquete | `{}` o `{"lodash": "^4.17.0"}` |
-| `license` | Tipo de licencia | `"MIT"` |
-| `maintainer_count` | Número de mantenedores | `2` |
-| `last_modified` | Fecha de última modificación | `"2025-10-30T16:21:05.788Z"` |
-| `total_files` | Archivos JS/TS en el paquete | `24` |
-| `total_functions` | Funciones detectadas (simulado) | `84` |
-| `tarball_url` | URL del archivo comprimido | `"https://registry.npmjs.org/react/..."` |
+| `license` | Tipo de licencia |
+| `maintainer_count` | Número de mantenedores |
+| `last_modified` | Fecha de última modificación |
+| `total_files` | Archivos JS/TS en el paquete |
+| `total_functions` | Funciones detectadas (simulado) |
+| `tarball_url` | URL del archivo comprimido |
 
 ## 🚀 Instalación
 
@@ -174,24 +172,3 @@ USER_AGENT = 'npm_metrics_package (tu-email@ejemplo.com)'
 - **APIs de NPM:**
   - Downloads API: `api.npmjs.org`
   - Registry API: `registry.npmjs.org`
-
-## 🔮 Próximas Mejoras
-
-### Análisis de Código Real
-Actualmente, el conteo de funciones es una **simulación**. Para implementar análisis real:
-
-```bash
-pip install esprima  # Parser JavaScript
-```
-
-Luego modificar `pipelines.py` para usar un parser AST real.
-
-### Métricas Adicionales Sugeridas
-- 📈 Tendencia de descargas (últimos 6 meses)
-- 🐛 Número de issues abiertas en GitHub
-- ⭐ Estrellas en GitHub
-- 🔄 Frecuencia de actualizaciones
-- 📦 Número de versiones publicadas
-
-### Base de Datos
-Guardar resultados en una base de datos (SQLite, PostgreSQL, MongoDB) en lugar de solo JSON.
