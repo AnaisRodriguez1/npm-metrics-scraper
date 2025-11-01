@@ -31,7 +31,7 @@ class PackageInfoSpider(scrapy.Spider):
 
         try:
             data = json.loads(response.text)
-            item['downloads_last_month'] = data.get('downloads',0)
+            item['downloads_last_month'] = data.get('downloads',0) #TODO: Asumimos que si no tiene descargas es 0
         except json.JSONDecodeError:
             self.logger.warning(f"Error decoding downloads for {item['package_name']}")
         
@@ -54,6 +54,15 @@ class PackageInfoSpider(scrapy.Spider):
             item['purpose'] = data.get('description', 'No description available')
 
             item['license'] = data.get('license')
+
+            #Author information
+            author_data = data.get('author', {})
+            if isinstance(author_data, dict):
+                item['author'] = author_data.get('name', 'Unknown')
+            elif isinstance(author_data, str):
+                item['author'] = author_data
+            else:
+                item['author'] = 'Unknown'
 
             #Counter of maintainers
             maintainers = data.get('maintainers', [])

@@ -1,44 +1,28 @@
 # 📊 NPM Metrics Scraper
 
-## Arquitectura del Proyecto
-
-```
-npm-metrics-scraper/
-├── npm-metrics-package/          # Carpeta principal del proyecto Scrapy
-│   ├── npm_metrics_package/      # Paquete Python con el código
-│   │   ├── spiders/              # 🕷️ Los "robots" que hacen el scraping
-│   │   │   └── package_info_spider.py  # Spider principal
-│   │   ├── items.py              # 📋 Define qué datos queremos capturar
-│   │   ├── pipelines.py          # 🔧 Procesa los datos descargados
-│   │   ├── settings.py           # ⚙️ Configuración del scraper
-│   │   └── middlewares.py        # 🔌 Middleware (no usado actualmente)
-│   ├── scrapy.cfg                # Configuración de Scrapy
-│   ├── requirements.txt          # Dependencias del proyecto
-│   └── npm_metrics_results.json  # 💾 Resultados generados
-└── README.md                     # 📖 Este archivo
-```
+Herramienta de análisis automatizado para extraer métricas de paquetes NPM mediante web scraping. Combina APIs públicas de NPM con análisis estático de código (AST) para obtener información completa sobre paquetes JavaScript/TypeScript.
 
 ## Flujo de Trabajo
 
-### **PASO A: Descubrimiento** 🔍
+### **PASO A: Descubrimiento**
 El spider comienza con una lista de paquetes (por ejemplo: `react`, `axios`, `lodash`).
 
 ```python
 package_list = ['react', 'axios', 'lodash']
 ```
 
-### **PASO B: API de Descargas** 📊
+### **PASO B: API de Descargas**
 Para cada paquete, consulta la API de NPM para obtener las **descargas del último mes**.
 
 ```
-📡 https://api.npmjs.org/downloads/point/last-month/react
+https://api.npmjs.org/downloads/point/last-month/react
 ```
 
-### **PASO C: API de Registro (Metadata)** 📝
+### **PASO C: API de Registro (Metadata)**
 Luego consulta la Registry API de NPM para obtener información detallada:
 
 ```
-📡 https://registry.npmjs.org/react
+https://registry.npmjs.org/react
 ```
 
 **Datos que obtiene:**
@@ -47,21 +31,25 @@ Luego consulta la Registry API de NPM para obtener información detallada:
 - ✅ Dependencias (`dependencies`)
 - ✅ Tamaño descomprimido (`size_mb`)
 - ✅ Licencia (`license`)
+- ✅ Autor del paquete (`author`)
 - ✅ Número de mantenedores (`maintainer_count`)
 - ✅ Última modificación (`last_modified`)
 - ✅ URL del tarball (para descarga)
 - ✅ URL pública del paquete
 
-### **PASO D: Análisis Local de Código** 🔬
+### **PASO D: Análisis Local de Código**
 El Pipeline descarga el archivo `.tgz` del paquete y analiza:
 
 1. **Descarga el tarball** (archivo comprimido del paquete)
 2. **Descomprime** en una carpeta temporal
 3. **Cuenta archivos** JavaScript/TypeScript (`.js`, `.ts`, `.jsx`, `.tsx`)
-4. **Simula conteo de funciones** (AST implementado)
+4. **Analiza el código fuente con AST** usando [esprima](https://esprima.org/):
+   - Parsea cada archivo JS/TS generando un árbol de sintaxis abstracta (AST)
+   - Recorre el AST detectando funciones: `FunctionDeclaration`, `ArrowFunctionExpression`, `MethodDefinition`, `FunctionExpression`
+   - Evita doble conteo de funciones internas en métodos
 5. **Limpia** la carpeta temporal
 
-## 📋 Datos Capturados
+## Datos Capturados
 
 Para cada paquete NPM, el scraper recopila:
 
@@ -75,13 +63,14 @@ Para cada paquete NPM, el scraper recopila:
 | `size_mb` | Tamaño descomprimido en MB |
 | `dependencies` | Dependencias del paquete | `{}` o `{"lodash": "^4.17.0"}` |
 | `license` | Tipo de licencia |
+| `author` | Autor del paquete | `"Meta"` |
 | `maintainer_count` | Número de mantenedores |
 | `last_modified` | Fecha de última modificación |
-| `total_files` | Archivos JS/TS en el paquete |
-| `total_functions` | Funciones detectadas (simulado) |
+| `total_files` | Archivos JS/TS/JSX/TSX en el paquete |
+| `total_functions` | Funciones detectadas con AST |
 | `tarball_url` | URL del archivo comprimido |
 
-## 🚀 Instalación
+## Instalación
 
 ### Requisitos Previos
 - Python 3.11 o superior
@@ -123,7 +112,7 @@ cd npm-metrics-package
 pip install -r requirements.txt
 ```
 
-## 💻 Uso
+## Uso
 
 ### Ejecutar el Scraper
 
@@ -134,7 +123,7 @@ scrapy crawl package_info_spider -o npm_metrics_results.json
 
 ### Cambiar los Paquetes a Analizar
 
-Edita el archivo `npm_metrics_package/spiders/package_info_spider.py`:
+Para cambiar los paquetes, se debe editar el archivo `npm_metrics_package/spiders/package_info_spider.py`:
 
 ```python
 package_list = ['react', 'vue', 'angular', 'express', 'next']
@@ -144,7 +133,7 @@ package_list = ['react', 'vue', 'angular', 'express', 'next']
 
 Los resultados se guardan en `npm_metrics_results.json`:
 
-## ⚙️ Configuración
+## Configuración
 
 ### Ajustar la Velocidad del Scraping
 
@@ -160,15 +149,36 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 
 ### Cambiar el User-Agent
 
+En `npm_metrics_package/settings.py`, personaliza el User-Agent con su correo electrónico:
+
 ```python
 USER_AGENT = 'npm_metrics_package (tu-email@ejemplo.com)'
 ```
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 - **[Scrapy 2.13](https://scrapy.org/)** - Framework de web scraping
 - **[Python 3.11](https://www.python.org/)** - Lenguaje de programación
-- **[Requests](https://requests.readthedocs.io/)** - Para descargar tarballs
+- **[Esprima](https://esprima.org/)** - Parser de JavaScript para análisis AST
+- **[Requests](https://requests.readthedocs.io/)** - Cliente HTTP para descargar tarballs
 - **APIs de NPM:**
   - Downloads API: `api.npmjs.org`
   - Registry API: `registry.npmjs.org`
+
+## Arquitectura del Proyecto
+
+```
+npm-metrics-scraper/
+├── npm-metrics-package/
+│   ├── npm_metrics_package/
+│   │   ├── spiders/
+│   │   │   └── package_info_spider.py    # Spider principal
+│   │   ├── items.py                       # Definición de datos
+│   │   ├── pipelines.py                   # Procesamiento y análisis AST
+│   │   ├── settings.py                    # Configuración
+│   │   └── middlewares.py
+│   ├── scrapy.cfg
+│   ├── requirements.txt
+│   └── npm_metrics_results.json           # Resultados
+└── README.md
+```

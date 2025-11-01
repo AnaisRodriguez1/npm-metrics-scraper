@@ -35,3 +35,4 @@ class NpmMetricsPackageItem(scrapy.Item):
     license = scrapy.Field()
     maintainer_count = scrapy.Field()
     last_modified = scrapy.Field()
+    author = scrapy.Field()
