@@ -31,7 +31,7 @@ class PackageInfoSpider(scrapy.Spider):
 
         try:
             data = json.loads(response.text)
-            item['downloads_last_month'] = data.get('downloads',0) #TODO: Asumimos que si no tiene descargas es 0
+            item['downloads_last_month'] = data.get('downloads',0)
         except json.JSONDecodeError:
             self.logger.warning(f"Error decoding downloads for {item['package_name']}")
         
