@@ -18,21 +18,21 @@ class LocalCodeAnalysisPipeline:
                 return
 
             node_type = getattr(node, 'type', None)
-            
-            # Contar funciones, pero evitar doble conteo de FunctionExpression dentro de MethodDefinition
+
+            # Count functions, but avoid double counting of FunctionExpression inside MethodDefinition
             if node_type == 'FunctionDeclaration':
                 count += 1
             elif node_type == 'ArrowFunctionExpression':
                 count += 1
             elif node_type == 'MethodDefinition':
                 count += 1
-                # NO contar el FunctionExpression interno del método
+                # DO NOT count the inner FunctionExpression of the method
             elif node_type == 'FunctionExpression':
-                # Solo contar si NO es parte de un MethodDefinition
+                # Only count if NOT part of a MethodDefinition
                 if parent_type != 'MethodDefinition':
                     count += 1
 
-            # Visitar nodos hijos
+            # Visit child nodes
             for key, value in vars(node).items():
                 if hasattr(value, 'type'):
                     visit_nodes(value, node_type)
@@ -73,7 +73,7 @@ class LocalCodeAnalysisPipeline:
                         for file_name in files:
                             if file_name.endswith(('.js', '.ts', '.jsx', '.tsx')):
                                 file_path = os.path.join(root, file_name)
-                                total_files += 1  # Contar TODOS los archivos antes de parsear
+                                total_files += 1  # Count all files before parsing
                                 
                                 try:
                                     with open(file_path, 'r', encoding='utf-8') as f:
