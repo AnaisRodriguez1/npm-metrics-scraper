@@ -131,7 +131,23 @@ package_list = ['react', 'vue', 'angular', 'express', 'next']
 
 ### Ver los Resultados
 
-Los resultados se guardan en `npm_metrics_results.json`:
+Los resultados se guardan en `npm_metrics_results.json`.
+
+### Ejecutar Tests
+
+Para verificar que el contador de funciones AST funciona correctamente:
+
+```bash
+cd npm-metrics-package
+python test_ast_counter.py
+```
+
+El test valida que la función `count_functions_in_ast()` detecte correctamente:
+- Function declarations
+- Arrow functions
+- Class methods
+- Mixed function types
+- Nested functions
 
 ## Configuración
 
