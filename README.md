@@ -22,7 +22,7 @@ The scraper executes a four-step process for each package in a predefined list.
 
 ---
 
-### 🚀 Quick Start
+### Quick Start
 
 1.  **Clone & Setup:**
     ```bash
