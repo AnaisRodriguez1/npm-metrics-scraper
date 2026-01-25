@@ -1,12 +1,12 @@
-# 📊 NPM Metrics Scraper
+# NPM Metrics Scraper
 
 This is a Scrapy project designed to scrape key metrics for specified NPM packages.
 
 ---
 
-### ⚙️ Core Workflow
+### Core Workflow
 
-The scraper executes a four-step process for each package in a predefined list (e.g., `react`, `vue`):
+The scraper executes a four-step process for each package in a predefined list.
 
 1.  **Downloads API:** It queries the `api.npmjs.org` endpoint to get the **download count** for the last month.
 2.  **Registry API:** It queries the `registry.npmjs.org` endpoint to fetch detailed **package metadata**, including:
@@ -47,14 +47,11 @@ The scraper executes a four-step process for each package in a predefined list (
 
 ---
 
-### 🔧 Configuration
+### Configuration
 
 * **Change Packages:** Edit the `package_list` variable in `npm_metrics_package/spiders/package_info_spider.py`.
 * **Rate Limiting:** Adjust `DOWNLOAD_DELAY` in `npm_metrics_package/settings.py` to avoid overloading the server.
 
-### 🛠️ Tech Stack
+## TODO
 
-* **Python 3.11**
-* **Scrapy 2.13** (Core framework)
-* **Requests** (For downloading tarballs)
-* **NPM APIs** (Downloads and Registry)
+* **Refine AST Function Counting:** Filter out undeclared functions (e.g., anonymous callbacks) and scalability-related boilerplate to ensure the metric reflects only core business logic.
